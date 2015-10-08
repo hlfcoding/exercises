@@ -103,3 +103,54 @@ func largestPrimeFactor(n: Int) -> Int {
 
 // Wow.
 //largestPrimeFactor(600851475143)
+//: ## 4. Largest palindrome product
+//:
+//: A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+//:
+//: Find the largest palindrome made from the product of two 3-digit numbers.
+func isPalindrome(n: Int) -> Bool {
+    let digits = Array(String(n).characters)
+    if digits.count % 2 != 0 { return false }
+    return digits.reverse() == digits
+}
+
+assert(isPalindrome(9009))
+assert(!isPalindrome(123))
+
+func largestPalindrome(digitsPerNumber: Int) -> Int {
+    guard var n = Int(Array(count: digitsPerNumber, repeatedValue: "9").joinWithSeparator(""))
+          else { return 0 }
+    var n1: Int!
+    var n2: Int!
+    var product: Int!
+    func reset() {
+        n1 = n
+        n2 = n
+        product = n1 * n2
+    }
+    reset()
+    while !isPalindrome(product) && product > 0 {
+        if n1 > n2 { n1!-- }
+        else { n2!-- }
+        product = n1 * n2
+    }
+    var candidate = product
+    reset()
+    while !isPalindrome(product) && product > 0 {
+        repeat {
+            n2!--
+            product = n1 * n2
+            if product < candidate { break }
+        } while !isPalindrome(product) && product > 0
+        n2 = n
+        n1!--
+        product = n1 * n2
+        if product < candidate { break }
+    }
+    if product > candidate {
+        candidate = product
+    }
+    return candidate
+}
+
+largestPalindrome(3)
