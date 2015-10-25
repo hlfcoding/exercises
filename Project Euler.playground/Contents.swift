@@ -114,6 +114,13 @@ func largestPrimeFactor(n: Int) -> Int {
 //: A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
 //:
 //: Find the largest palindrome made from the product of two 3-digit numbers.
+//:
+//: ---
+//:
+//: First solution decreases both factors simultaneously. This approach is faster at finding a palindrome but unlikely to find the largest palindrome.
+//:
+//: Second solution quadratically checks by running through first n largest possiblities of second factor against each n largest possibilities of first factor.
+//:
 func isPalindrome(n: Int) -> Bool {
     let digits = Array(String(n).characters)
     if digits.count % 2 != 0 { return false }
@@ -124,39 +131,25 @@ assert(isPalindrome(9009))
 assert(!isPalindrome(123))
 
 func largestPalindrome(digitsPerNumber: Int) -> Int {
-    guard var n = Int(Array(count: digitsPerNumber, repeatedValue: "9").joinWithSeparator(""))
+    guard let n = Int(Array(count: digitsPerNumber, repeatedValue: "9").joinWithSeparator(""))
           else { return 0 }
-    var n1: Int!
-    var n2: Int!
-    var product: Int!
-    func reset() {
-        n1 = n
+    var n1 = n
+    var n2 = n
+    var product = n1 * n2
+//    while !isPalindrome(product) && product > 0 {
+//        if n1 > n2 { n1-- }
+//        else { n2-- }
+//        product = n1 * n2
+//    }
+    repeat {
         n2 = n
-        product = n1 * n2
-    }
-    reset()
-    while !isPalindrome(product) && product > 0 {
-        if n1 > n2 { n1!-- }
-        else { n2!-- }
-        product = n1 * n2
-    }
-    var candidate = product
-    reset()
-    while !isPalindrome(product) && product > 0 {
         repeat {
-            n2!--
             product = n1 * n2
-            if product < candidate { break }
-        } while !isPalindrome(product) && product > 0
-        n2 = n
-        n1!--
-        product = n1 * n2
-        if product < candidate { break }
-    }
-    if product > candidate {
-        candidate = product
-    }
-    return candidate
+            n2--
+        } while !isPalindrome(product) && Double(n2) / Double(n) > 0.9
+        n1--
+    } while !isPalindrome(product) && Double(n1) / Double(n) > 0.9
+    return product
 }
 
 largestPalindrome(3)
