@@ -121,17 +121,20 @@ func largestPrimeFactor(n: Int) -> Int {
 //:
 //: Second solution quadratically checks by running through first n largest possiblities of second factor against each n largest possibilities of first factor.
 //:
-func isPalindrome(n: Int) -> Bool {
-    let digits = Array(String(n).characters)
-    if digits.count % 2 != 0 { return false }
-    return digits.reverse() == digits
+
+extension Int {
+    func isPalindrome() -> Bool {
+        let digits = Array(String(self).characters)
+        if digits.count % 2 != 0 { return false }
+        return digits.reverse() == digits
+    }
 }
 
-assert(isPalindrome(9009))
-assert(!isPalindrome(123))
+assert(9009.isPalindrome())
+assert(!123.isPalindrome())
 
-func largestPalindrome(digitsPerNumber: Int) -> Int {
-    guard let n = Int(Array(count: digitsPerNumber, repeatedValue: "9").joinWithSeparator(""))
+func largestPalindromeFromTwoNumbersWithDigits(digits: Int) -> Int {
+    guard let n = Int(Array(count: digits, repeatedValue: "9").joinWithSeparator(""))
           else { return 0 }
     var n1 = n
     var n2 = n
@@ -146,10 +149,10 @@ func largestPalindrome(digitsPerNumber: Int) -> Int {
         repeat {
             product = n1 * n2
             n2--
-        } while !isPalindrome(product) && Double(n2) / Double(n) > 0.9
+        } while !product.isPalindrome() && Double(n2) / Double(n) > 0.9
         n1--
-    } while !isPalindrome(product) && Double(n1) / Double(n) > 0.9
+    } while !product.isPalindrome() && Double(n1) / Double(n) > 0.9
     return product
 }
 
-largestPalindrome(3)
+//largestPalindromeFromTwoNumbersWithDigits(3)
