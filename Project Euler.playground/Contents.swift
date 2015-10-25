@@ -162,3 +162,47 @@ func largestPalindromeFromTwoNumbersWithDigits(digits: Int) -> Int {
 }
 
 //largestPalindromeFromTwoNumbersWithDigits(3)
+//:
+//: ## 5. Smallest multiple
+//:
+//: 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+//:
+//: What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+//:
+//: ---
+//:
+//: The initial approach is to just have the step be the max factor. This won't scale for the larger range. Instead, the product of the primes in the range seems like a much better step, for reasons yet fully clear. Another optimization is to remove redundancies in the factors before checking divisibility.
+//:
+extension Int {
+    func isDivisibleByNumbers(numbers: [Int]) -> Bool {
+        for n in numbers where self % n != 0 {
+            return false
+        }
+        return true
+    }
+}
+
+assert(4.isDivisibleByNumbers(Array(1...2)))
+
+func smallestMultipleDivisibleByRange(range: Range<Int>) -> Int {
+    var factors: [Int] = []
+    var step: Int = 1
+    outer: for n in range.reverse() {
+        if n.isPrime() {
+            step *= n
+        }
+        for f in factors where f > n && f % n == 0 {
+            continue outer
+        }
+        factors.append(n)
+    }
+    print("Step: \(step), factors: \(factors)")
+    var multiple = 0
+    repeat {
+        multiple += step
+    } while !multiple.isDivisibleByNumbers(factors)
+    return multiple
+}
+
+//smallestMultipleDivisibleByRange(1...10)
+//smallestMultipleDivisibleByRange(1...20)
