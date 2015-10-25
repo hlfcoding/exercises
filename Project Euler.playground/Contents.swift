@@ -54,60 +54,66 @@ func sumOfEvenFibonaccis(limit: Int = 4000000) -> Int {
 //:
 var primes = Set<Int>()
 
-func isPrime(n: Int) -> Bool {
-    if primes.contains(n) {
-        return true
-    }
-    var isPrime = true
-    var divisor = 2
-    while divisor <= n / divisor {
-        isPrime = n % divisor != 0
-        if !isPrime { break }
-        divisor++
-    }
-    if isPrime {
-        primes.insert(n)
-    }
-    return isPrime
-}
-
-assert(isPrime(2))
-assert(isPrime(3))
-assert(!isPrime(4))
-
-func findNextPrime(prime: Int) -> Int {
-    var candidate = prime
-    repeat {
-        candidate++
-    } while !isPrime(candidate)
-    return candidate
-}
-
-assert(findNextPrime(29) == 31)
-
-func largestPrimeFactor(n: Int) -> Int {
-    // try dividing number, starting from smallest prime, 2
-    // keep updating the bounds with each division until bounds <= divisor
-    var prime = 1
-    var factor = 1
-    var safety = 1000
- 
-    while prime < n / prime && safety > 0 {
-        safety--
-        prime = findNextPrime(prime)
-        if n % prime == 0 {
-            factor = prime
+extension Int {
+    func isPrime() -> Bool {
+        if primes.contains(self) {
+            return true
         }
-    }
-    if safety == 0 {
-        print("Too tired!")
+        var isPrime = true
+        var divisor = 2
+        while divisor <= self / divisor {
+            isPrime = self % divisor != 0
+            if !isPrime { break }
+            divisor++
+        }
+        if isPrime {
+            primes.insert(self)
+        }
+        return isPrime
     }
 
-    return factor
+    func nextPrime() -> Int {
+        var candidate = self
+        repeat {
+            candidate++
+        } while !candidate.isPrime()
+        return candidate
+    }
+}
+
+assert(2.isPrime())
+assert(3.isPrime())
+assert(!4.isPrime())
+
+assert(29.nextPrime() == 31)
+
+extension Int {
+    /**
+     Try dividing number, starting from smallest prime, 2.
+     Keep updating the bounds with each division until bounds <= divisor.
+     */
+    func largestPrimeFactor() -> Int {
+        var prime = 1
+        var factor = 1
+        var safety = 1000
+
+        while prime < self / prime && safety > 0 {
+            safety--
+            prime = prime.nextPrime()
+            if self % prime == 0 {
+                factor = prime
+            }
+        }
+        if safety == 0 {
+            print("Being safe and not continuing!")
+        }
+        
+        return factor
+    }
 }
 
 // Wow.
-//largestPrimeFactor(600851475143)
+//600851475143.largestPrimeFactor()
 //:
 //: ## 4. Largest palindrome product
 //:
