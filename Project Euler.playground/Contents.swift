@@ -252,10 +252,44 @@ assert(squareOfSum(1...10) - sumOfSquares(1...10) == 2640)
 //:
 //: Also, tick counts and printing are turned off to reduce operations. Any optimization I try to make in the outer loop with slicing sortedPrimes actually makes things run slower, probably due to compiler optimizations.
 //:
-var sortedPrimes = [2]
+//: Instead of trial division, the second solution uses a rather unoptimized Sieve of Erastothenes implementation, which seems to require fewer operations, about half. However, mutating the array while iterating seem to slow things down.
+//:
+//var sortedPrimes = [2]
 func nthPrime(ordinal: Int) -> Int {
-    let prime: Int!
+    let chunkCount = 10000
+    // Deal with 2 as a special case.
+    guard ordinal > 1 else { return 2 }
+    var upperBound = chunkCount
+    var ns = [2] + 3.stride(through: upperBound, by: 2)
+    // Given a prime, go through greater numbers and remove multiples.
+    func purgeMultiples(inout numbers: [Int], ofPrime p: Int) {
+        for n in numbers where n > p && n % p == 0 {
+            numbers.removeAtIndex(numbers.indexOf(n)!)
+        }
+    }
+    // Update the cursor on where numbers stop being guaranteed primes.
+    var o = 2
+    while o < ordinal {
+        purgeMultiples(&ns, ofPrime: ns[o - 1])
+        o++
+        // If our cursor cannot move forward because our chunk ran out...
+        if o > ns.count {
+            // Add another chunk.
+            let lowerBound = upperBound + 1
+            upperBound += chunkCount
+            var ns2 = Array(lowerBound.stride(through: upperBound, by: 2))
+            for p in ns {
+                purgeMultiples(&ns2, ofPrime: p)
+            }
+            ns += ns2
+        }
+    }
+    return ns[o - 1]
+    //
+    // Solution 1:
+    /*
     //var tick = 0
+    let prime: Int!
     if ordinal > sortedPrimes.count {
         var candidate = sortedPrimes.last!
         outer: repeat {
@@ -275,10 +309,11 @@ func nthPrime(ordinal: Int) -> Int {
         prime = sortedPrimes[ordinal - 1]
     }
     return prime
+    */
 }
 
-assert(nthPrime(1) == 2)
-assert(nthPrime(6) == 13)
+//assert(nthPrime(1) == 2)
+//assert(nthPrime(6) == 13)
 // Wow.
 //nthPrime(10001)
 //:
