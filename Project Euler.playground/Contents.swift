@@ -223,12 +223,16 @@ func smallestMultipleDivisibleByRange(range: Range<Int>) -> Int {
 //:
 //: This problem can simply be brute-forced. The largest number isn't that big, smaller than max 32-bit int.
 //:
+func pow(n: Int, _ p: Int) -> Int {
+    return Int(pow(Double(n), Double(p)))
+}
+
 func sumOfSquares(range: Range<Int>) -> Int {
-    return range.reduce(0) { $0 + Int(pow(Double($1), 2)) }
+    return range.reduce(0) { $0 + pow($1, 2) }
 }
 
 func squareOfSum(range: Range<Int>) -> Int {
-    return Int(pow(Double(range.reduce(0) { $0 + $1 }), 2))
+    return pow(range.reduce(0) { $0 + $1 }, 2)
 }
 
 assert(sumOfSquares(1...10) == 385)
@@ -356,8 +360,8 @@ let a = 220 // tweak...
 let b = 359 // tweak...
 let c = 421 // tweak...
 assert(a + b + c == 1000)
-let a2 = pow(Double(a), 2)
-let b2 = pow(Double(b), 2)
-let c2 = pow(Double(c), 2)
+let a2 = pow(a, 2)
+let b2 = pow(b, 2)
+let c2 = pow(c, 2)
 (a2 + b2) - c2 // check... needs to be 0
 
