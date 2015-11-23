@@ -385,18 +385,46 @@ assert(maxAdjacentDigitsProductOfLength(4, digits: digits) == 5832)
 //: 
 //: ---
 //:
-3 + 4 + 5 // 12
-1000.0 / 12.0 // 83.3...
-3 * 83.333 // 249.9...
-4 * 83.333 // 333.3...
-5 * 83.333 // 416.6...
-250 + 333 + 417
-let a = 220 // tweak...
-let b = 359 // tweak...
-let c = 421 // tweak...
-assert(a + b + c == 1000)
-let a2 = pow(a, 2)
-let b2 = pow(b, 2)
-let c2 = pow(c, 2)
-(a2 + b2) - c2 // check... needs to be 0
+//: The solution basically brute-forces checking possible leg values by checking all other criteria. The one criteria not mentioned but inferrable is (right) triangles have additional characteristics.
+//:
+func pythagoreanTripletForSum(sum: Int) -> [Int]? {
+    var triplet: [Int]?
+    // Neither can be longer than the hypotenuse, and latter needs to be
+    // at least half to be longest side.
+    let legMax = sum / 2 - 1
+    // Go through candidates (in order) for a, b, c.
+    var a: Int!; var b: Int!; var c: Int!
+    outer: for cA in 1...legMax { // Natural numbers start from 1.
+        for cB in (cA + 1)...legMax // a < b
+            // Sum of legs must be greater than hypotenuse to be a triangle.
+            where cA + cB > sum / 2
+        {
+	        // Right triangles are such that 'leg' angles have tangent
+            // relations with the legs.
+            guard atan(Double(cA)/Double(cB)) + atan(Double(cB)/Double(cA)) == M_PI_2 else { continue }
+            a = cA
+            b = cB
+            // Needs to be a right triangle's hypotenuse.
+            let cC = sqrt(Double(pow(a, 2) + pow(b, 2)))
+            guard cC % 1.0 == 0 else { continue }
+            c = Int(cC)
+            // Needs to fit sum.
+            guard a + b + c == sum else { continue }
+            // Commit.
+            triplet = [a, b, c]
+            break outer
+        }
+    }
+    return triplet
+}
 
+assert(pythagoreanTripletForSum(12)! == [3, 4, 5])
+//print(pythagoreanTripletForSum(1000)!.reduce(1) { $0 * $1 })
+//:
+//: ## 10. Summation of Primes
+//:
+//: The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17. Find the sum of all the primes below two million.
+//:
+//: ---
+//:
+assert(true)
