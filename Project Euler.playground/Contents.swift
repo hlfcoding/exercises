@@ -393,25 +393,21 @@ func pythagoreanTripletForSum(sum: Int) -> [Int]? {
     // at least half to be longest side.
     let legMax = sum / 2 - 1
     // Go through candidates (in order) for a, b, c.
-    var a: Int!; var b: Int!; var c: Int!
-    outer: for cA in 1...legMax { // Natural numbers start from 1.
-        for cB in (cA + 1)...legMax // a < b
+    outer: for a in 1...legMax { // Natural numbers start from 1.
+        for b in (a + 1)...legMax // a < b
             // Sum of legs must be greater than hypotenuse to be a triangle.
-            where cA + cB > sum / 2
+            where a + b > sum / 2
         {
 	        // Right triangles are such that 'leg' angles have tangent
             // relations with the legs.
-            guard atan(Double(cA)/Double(cB)) + atan(Double(cB)/Double(cA)) == M_PI_2 else { continue }
-            a = cA
-            b = cB
+            guard atan(Double(a)/Double(b)) + atan(Double(b)/Double(a)) == M_PI_2 else { continue }
             // Needs to be a right triangle's hypotenuse.
-            let cC = sqrt(Double(pow(a, 2) + pow(b, 2)))
-            guard cC % 1.0 == 0 else { continue }
-            c = Int(cC)
+            let c = sqrt(Double(pow(a, 2) + pow(b, 2)))
+            guard c % 1.0 == 0 else { continue }
             // Needs to fit sum.
-            guard a + b + c == sum else { continue }
+            guard a + b + Int(c) == sum else { continue }
             // Commit.
-            triplet = [a, b, c]
+            triplet = [a, b, Int(c)]
             break outer
         }
     }
