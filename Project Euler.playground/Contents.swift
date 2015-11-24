@@ -455,4 +455,18 @@ assert(pythagoreanTripletForSum(12)! == [3, 4, 5])
 //:
 //: ---
 //:
-assert(true)
+extension Int {
+    func sumOfPrimesBelow() -> Int {
+        let s = SieveOfEratosthenes()
+        var sum = 2
+        while s.lastPrime < self {
+            sum += s.lastPrime
+            s.purgeNextMultiples()
+            s.updateCursorIndex()
+        }
+        return sum
+    }
+}
+//assert(10.sumOfPrimesBelow() == 17)
+//assert(100.sumOfPrimesBelow() == 1060)
+//print(2000000.sumOfPrimesBelow())
