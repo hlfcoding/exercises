@@ -252,11 +252,11 @@ assert(squareOfSum(1...10) - sumOfSquares(1...10) == 2640)
 //:
 //: Also, tick counts and printing are turned off to reduce operations. Any optimization I try to make in the outer loop with slicing sortedPrimes actually makes things run slower, probably due to compiler optimizations.
 //:
-//: Instead of trial division, the second solution uses a rather unoptimized Sieve of Erastothenes implementation, which seems to require fewer operations, about half. However, mutating the array while iterating seem to slow things down.
+//: Instead of trial division, the second solution uses a rather unoptimized Sieve of Eratosthenes implementation, which seems to require fewer operations, about half. However, mutating the array while iterating seem to slow things down.
 //:
 // Given a prime, go through greater numbers and remove multiples.
 
-class SieveOfErastothenes {
+class SieveOfEratosthenes {
     private let chunkCount = 10000
     private var largestPrimeIndex = 0
     private var upperBound: Int!
@@ -294,16 +294,15 @@ class SieveOfErastothenes {
         // Update the cursor on where numbers stop being guaranteed primes.
         largestPrimeIndex++
         // If our cursor cannot move forward because our chunk ran out...
-        if largestPrimeIndex == nums.count {
-            // Add another chunk.
-            let lowerBound = upperBound + 1
-            upperBound = upperBound + chunkCount
-            var addition = Array(lowerBound.stride(through: upperBound, by: 2))
-            for p in nums {
-                purgeMultiplesOfPrime(p, forNumbers: &addition)
-            }
-            nums += addition
+        guard largestPrimeIndex == nums.count else { return }
+        // Add another chunk.
+        let lowerBound = upperBound + 1
+        upperBound = upperBound + chunkCount
+        var addition = Array(lowerBound.stride(through: upperBound, by: 2))
+        for p in nums {
+            purgeMultiplesOfPrime(p, forNumbers: &addition)
         }
+        nums += addition
     }
 }
 
@@ -311,7 +310,7 @@ class SieveOfErastothenes {
 func nthPrime(ordinal: Int) -> Int {
     // Deal with 2 as a special case.
     guard ordinal > 1 else { return 2 }
-    let s = SieveOfErastothenes()
+    let s = SieveOfEratosthenes()
     while (s.largestPrimeIndex + 1) < ordinal {
         s.purgeNextMultiples()
         s.updateCursorIndex()
@@ -346,6 +345,7 @@ func nthPrime(ordinal: Int) -> Int {
 
 //assert(nthPrime(1) == 2)
 //assert(nthPrime(6) == 13)
+//assert(nthPrime(1000) == 7919)
 // Wow.
 //nthPrime(10001)
 //:
