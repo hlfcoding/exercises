@@ -254,37 +254,60 @@ assert(squareOfSum(1...10) - sumOfSquares(1...10) == 2640)
 //:
 //: Instead of trial division, the second solution uses a rather unoptimized Sieve of Erastothenes implementation, which seems to require fewer operations, about half. However, mutating the array while iterating seem to slow things down.
 //:
-//var sortedPrimes = [2]
-func nthPrime(ordinal: Int) -> Int {
-    let chunkCount = 10000
-    // Deal with 2 as a special case.
-    guard ordinal > 1 else { return 2 }
-    var upperBound = chunkCount
-    var ns = [2] + 3.stride(through: upperBound, by: 2)
-    // Given a prime, go through greater numbers and remove multiples.
-    func purgeMultiples(inout numbers: [Int], ofPrime p: Int) {
-        for n in numbers where n > p && n % p == 0 {
-            numbers.removeAtIndex(numbers.indexOf(n)!)
+// Given a prime, go through greater numbers and remove multiples.
+
+class SieveOfErastothenes {
+    private let chunkCount = 10000
+    private var largestPrimeIndex = 0
+    private var upperBound: Int!
+    private var nums = [2]
+
+    var lastPrime: Int { return nums[largestPrimeIndex] }
+    var primes: [Int] { return Array(nums[0...largestPrimeIndex]) }
+
+    init() {
+        upperBound = chunkCount
+        nums += 3.stride(through: upperBound, by: 2)
+        largestPrimeIndex = 1
+    }
+
+    func purgeNextMultiples() {
+        purgeMultiplesOfPrime(nums[largestPrimeIndex], forNumbers: &nums)
+    }
+
+    private func purgeMultiplesOfPrime(p: Int, inout forNumbers nums: [Int]) {
+        for n in nums where n > p && n % p == 0 {
+            nums.removeAtIndex(nums.indexOf(n)!)
         }
     }
-    // Update the cursor on where numbers stop being guaranteed primes.
-    var o = 2
-    while o < ordinal {
-        purgeMultiples(&ns, ofPrime: ns[o - 1])
-        o++
+
+    func updateCursorIndex() {
+        // Update the cursor on where numbers stop being guaranteed primes.
+        largestPrimeIndex++
         // If our cursor cannot move forward because our chunk ran out...
-        if o > ns.count {
+        if largestPrimeIndex == nums.count {
             // Add another chunk.
             let lowerBound = upperBound + 1
-            upperBound += chunkCount
-            var ns2 = Array(lowerBound.stride(through: upperBound, by: 2))
-            for p in ns {
-                purgeMultiples(&ns2, ofPrime: p)
+            upperBound = upperBound + chunkCount
+            var addition = Array(lowerBound.stride(through: upperBound, by: 2))
+            for p in nums {
+                purgeMultiplesOfPrime(p, forNumbers: &addition)
             }
-            ns += ns2
+            nums += addition
         }
     }
-    return ns[o - 1]
+}
+
+//var sortedPrimes = [2]
+func nthPrime(ordinal: Int) -> Int {
+    // Deal with 2 as a special case.
+    guard ordinal > 1 else { return 2 }
+    let s = SieveOfErastothenes()
+    while (s.largestPrimeIndex + 1) < ordinal {
+        s.purgeNextMultiples()
+        s.updateCursorIndex()
+    }
+    return s.lastPrime
     //
     // Solution 1:
     /*
