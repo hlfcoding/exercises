@@ -272,12 +272,21 @@ class SieveOfErastothenes {
     }
 
     func purgeNextMultiples() {
-        purgeMultiplesOfPrime(nums[largestPrimeIndex], forNumbers: &nums)
+        purgeMultiplesOfPrime(lastPrime, forNumbers: &nums)
     }
 
-    private func purgeMultiplesOfPrime(p: Int, inout forNumbers nums: [Int]) {
-        for n in nums where n > p && n % p == 0 {
-            nums.removeAtIndex(nums.indexOf(n)!)
+    func purgeMultiplesOfPrime(p: Int, inout forNumbers nums: [Int]) {
+        var factor = p // No need to check multiples below the square.
+        func multiple() -> Int { return p * factor }
+        if multiple() <= nums.first! {
+            // Scale factor up as needed (for added chunks).
+            factor = nums.first! / multiple()
+        }
+        while multiple() <= nums.last! {
+            if let i = nums.indexOf(multiple()) {
+                nums.removeAtIndex(i)
+            }
+            factor += 2
         }
     }
 
