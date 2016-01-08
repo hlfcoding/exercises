@@ -8,17 +8,32 @@ import Foundation
 //:
 //: Find the sum of all the multiples of 3 or 5 below 1000.
 //:
-func sumOfMultiplesOf3And5() -> Int {
+extension Int {
+    func triangleNumber() -> Int {
+        return self * (self + 1) / 2
+    }
+}
+
+func sumOfMultiplesOf3And5Below(limit: Int) -> Int {
+    // Approach 1: O(n): brute force
+    /*
     var sum = 0
-    for n in 3..<1000 where n % 3 == 0 || n % 5 == 0 {
+    for n in 3..<limit where n % 3 == 0 || n % 5 == 0 {
         sum += n
     }
     return sum
+    */
+    // Approach 2: O(1): use triangle number formula: f(3) = 1 + 2 + 3
+    let inclusiveLimit = limit - 1
+    let sum3 = 3 * (inclusiveLimit / 3).triangleNumber()
+    let sum5 = 5 * (inclusiveLimit / 5).triangleNumber()
+    let product = 3 * 5
+    let intersection = product * (inclusiveLimit / product).triangleNumber()
+    return sum3 + sum5 - intersection
 }
-// there are floor(999 / 5) multiples of 5: 1 * 5 + 2 * 5 + 3 * 5 -> (1 + 2 + 3) * 5
-// there are floor(999 / 3) multiples of 3: same
 
-//sumOfMultiplesOf3And5()
+assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9))
+//sumOfMultiplesOf3And5Below(1000)
 //:
 //: ## 2. Even Fibonacci numbers
 //:
