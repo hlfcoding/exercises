@@ -23,7 +23,7 @@ function sumOfMultiplesOf3And5Below(limit) {
   return parseInt(sum3 + sum5 - intersection);
 }
 
-console.assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9));
+console.assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9), 'sumOfMultiplesOf3And5Below');
 //console.log(sumOfMultiplesOf3And5Below(1000));
 
 // ## 2. Even Fibonacci numbers
@@ -52,7 +52,7 @@ function sumOfEvenFibonaccis(limit) {
   return sum;
 }
 
-console.assert(sumOfEvenFibonaccis(34) === 10);
+console.assert(sumOfEvenFibonaccis(34) === 10, 'sumOfEvenFibonaccis');
 //console.log(sumOfEvenFibonaccis(4000000));
 
 // ## 3. Largest prime factor
@@ -84,9 +84,9 @@ function isPrime(n) {
   return is;
 }
 
-console.assert(isPrime(2));
-console.assert(isPrime(3));
-console.assert(!isPrime(4));
+console.assert(isPrime(2), 'isPrime');
+console.assert(isPrime(3), 'isPrime');
+console.assert(!isPrime(4), 'isPrime');
 
 function nextPrime(n) {
   let candidate = n;
