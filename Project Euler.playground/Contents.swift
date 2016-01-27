@@ -142,7 +142,7 @@ extension Int {
 //:
 //: First solution decreases both factors simultaneously. This approach is faster at finding a palindrome but unlikely to find the largest palindrome.
 //:
-//: Second solution quadratically checks by running through first n largest possiblities of second factor against each n largest possibilities of first factor.
+//: Second solution quadratically checks by running through first n largest possiblities of second factor against each n largest possibilities of first factor. Since the number of digits is small, we don't need to be most efficient.
 //:
 
 extension Int {
@@ -178,6 +178,7 @@ func largestPalindromeFromTwoNumbersWithDigits(digits: Int) -> Int {
     return product
 }
 
+assert(largestPalindromeFromTwoNumbersWithDigits(2) == 9009)
 //largestPalindromeFromTwoNumbersWithDigits(3)
 //:
 //: ## 5. Smallest multiple
