@@ -165,3 +165,60 @@ function largestPalindromeFromTwoNumbersWithDigits(digits) {
 
 console.assert(largestPalindromeFromTwoNumbersWithDigits(2) === 9009, 'largestPalindromeFromTwoNumbersWithDigits');
 //console.log(largestPalindromeFromTwoNumbersWithDigits(3));
+
+// ## 5. Smallest multiple
+//
+// 2520 is the smallest number that can be divided by each of the numbers from 1
+// to 10 without any remainder.
+//
+// What is the smallest positive number that is evenly divisible by all of the
+// numbers from 1 to 20?
+//
+// ---
+//
+// The initial approach is to just have the step be the max factor. This won't
+// scale for the larger range. Instead, the product of the primes in the range
+// seems like a much better step, for reasons yet fully clear. Another
+// optimization is to remove redundancies in the factors before checking
+// divisibility.
+
+function isDivisibleBy(n, divisors) {
+  let nonDivisor = divisors.find(d => n % d !== 0);
+  return nonDivisor === undefined;
+}
+
+console.assert(isDivisibleBy(4, [1, 2]), 'isDivisibleBy');
+
+function createRange(length, start = 0) {
+  return Array.from(new Array(length), (_, i) => i + start);
+}
+
+console.assert(createRange(3, 1).toString() === [1, 2, 3].toString(), 'createRange');
+
+function smallestMultipleDivisibleByRange(range, debug = false) {
+  let factors = [];
+  let step = 1;
+  range.reverse().forEach((n) => {
+    if (isPrime(n)) {
+      step *= n;
+    }
+    for (let i = 0, l = factors.length; i < l; i++) {
+      let f = factors[i];
+      if (f > n && f % n === 0) {
+        return;
+      }
+    }
+    factors.push(n);
+  });
+  if (debug) {
+    console.log(`Step: ${step}, factors: ${factors}`);
+  }
+  let multiple = 0;
+  do {
+    multiple += step;
+  } while (!isDivisibleBy(multiple, factors));
+  return multiple;
+}
+
+console.assert(smallestMultipleDivisibleByRange(createRange(10, 1)) === 2520, 'smallestMultipleDivisibleByRange');
+//console.log(smallestMultipleDivisibleByRange(createRange(20, 1)));
