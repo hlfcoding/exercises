@@ -36,7 +36,7 @@ console.assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9), 'sumOfMultiple
 // By considering the terms in the Fibonacci sequence whose values do not exceed
 // four million, find the sum of the even-valued terms.
 
-function sumOfEvenFibonaccis(limit) {
+function sumOfEvenFibonaccis(limit, debug = false) {
   let sum = 2;
   let n1 = 1;
   let n2 = 2;
@@ -48,7 +48,9 @@ function sumOfEvenFibonaccis(limit) {
       sum += n2;
     }
   }
-  console.log(`Largest fib within limit is ${n2}`);
+  if (debug) {
+    console.log(`Largest fib within limit is ${n2}`);
+  }
   return sum;
 }
 
@@ -162,4 +164,4 @@ function largestPalindromeFromTwoNumbersWithDigits(digits) {
 }
 
 console.assert(largestPalindromeFromTwoNumbersWithDigits(2) === 9009, 'largestPalindromeFromTwoNumbersWithDigits');
-console.log(largestPalindromeFromTwoNumbersWithDigits(3));
+//console.log(largestPalindromeFromTwoNumbersWithDigits(3));
