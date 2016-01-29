@@ -132,16 +132,16 @@ function largestPrimeFactor(n) {
 // of second factor against each n largest possibilities of first factor. Since
 // the number of digits is small, we don't need to be most efficient.
 
-function reverse(s) {
+function reverseString(s) {
   return s.split('').reverse().join('');
 }
 
-console.assert(reverse('foo') === 'oof', 'reverse');
+console.assert(reverseString('foo') === 'oof', 'reverse');
 
 function isPalindrome(n) {
   let digits = (n).toString();
   if (digits.length % 2 !== 0) { return false; }
-  return reverse(digits) === digits;
+  return reverseString(digits) === digits;
 }
 
 console.assert(isPalindrome(9009), 'isPalindrome');
