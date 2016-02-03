@@ -254,3 +254,98 @@ console.assert(sumOfSquaresForRange(createRange(10, 1)) == 385, 'sumOfSquaresFor
 console.assert(squareOfSumOfRange(createRange(10, 1)) == 3025, 'squareOfSumOfRange');
 console.assert(squareOfSumOfRange(createRange(10, 1)) - sumOfSquaresForRange(createRange(10, 1)) == 2640, 'squareOfSumOfRange - sumOfSquaresForRange');
 //console.log(squareOfSumOfRange(createRange(100, 1)) - sumOfSquaresForRange(createRange(100, 1)));
+
+// ## 7. 10001st prime
+//
+// By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see
+// that the 6th prime is 13.
+//
+// What is the 10 001st prime number?
+//
+// ---
+//
+// Instead of trial division, the solution uses a rather unoptimized Sieve of
+// Eratosthenes implementation, which seems to require fewer operations, about
+// half. However, mutating the array while iterating seem to slow things down.
+
+// Given a prime, go through greater numbers and remove multiples.
+
+class SieveOfEratosthenes {
+
+  constructor() {
+    this.chunkCount = 10000;
+    this.upperBound = this.chunkCount;
+    this.nums = (() => {
+      let nums = [2];
+      for (let n = 3; n <= this.upperBound; n += 2) {
+        nums.push(n);
+      }
+      return nums;
+    })();
+    this.largestPrimeIndex = 1;
+  }
+
+  get lastPrime() {
+    return this.nums[this.largestPrimeIndex];
+  }
+
+  get primes() {
+    return this.nums.slice(0, this.largestPrimeIndex + 1);
+  }
+
+  purgeNextMultiples() {
+    this.purgeMultiplesOfPrime(this.lastPrime, this.nums);
+  }
+
+  purgeMultiplesOfPrime(p, nums) {
+    let factor = p; // No need to check multiples below the square.
+    function multiple() { return p * factor; }
+    if (multiple() <= this.nums[0]) {
+      // Scale factor up as needed (for added chunks).
+      factor = this.nums[0] / multiple();
+    }
+    while (multiple() <= this.nums[this.nums.length - 1]) {
+      let i = this.nums.indexOf(multiple());
+      if (i > -1) {
+        this.nums.splice(i, 1);
+      }
+      factor += 2;
+    }
+  }
+
+  updateCursorIndex() {
+    // Update the cursor on where numbers stop being guaranteed primes.
+    this.largestPrimeIndex++;
+    // If our cursor cannot move forward because our chunk ran out...
+    if (this.largestPrimeIndex !== this.nums.length) { return; }
+    // Add another chunk.
+    let lowerBound = this.upperBound + 1;
+    this.upperBound += this.chunkCount;
+    let addition = (() => {
+      let nums = [];
+      for (let n = lowerBound; n <= this.upperBound; n += 2) {
+        nums.push(n);
+      }
+      return nums;
+    })();
+    this.nums.forEach((p) => { this.purgeNextMultiples(p, addition); });
+    this.nums.concat(addition);
+  }
+
+}
+
+function nthPrime(ordinal) {
+  // Deal with 2 as a special case.
+  if (ordinal <= 1) { return 2; }
+  let s = new SieveOfEratosthenes();
+  while ((s.largestPrimeIndex + 1) < ordinal) {
+    s.purgeNextMultiples();
+    s.updateCursorIndex();
+  }
+  return s.lastPrime;
+}
+
+console.assert(nthPrime(1) === 2, 'nthPrime');
+console.assert(nthPrime(6) === 13, 'nthPrime');
+console.assert(nthPrime(1000) === 7919, 'nthPrime');
+//console.log(nthPrime(10001));
