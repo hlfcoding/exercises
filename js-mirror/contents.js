@@ -441,3 +441,48 @@ let digits = [
 
 console.assert(maxAdjacentDigitsProductOfLength(4, digits) == 5832, 'maxAdjacentDigitsProductOfLength');
 //console.log(maxAdjacentDigitsProductOfLength(13, digits));
+
+// ## 9. Special Pythagorean triplet
+//
+// A Pythagorean triplet is a set of three natural numbers, a < b < c, for
+// which, a^2 + b^2 = c^2. For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.
+//
+// There exists exactly one Pythagorean triplet for which a + b + c = 1000. Find
+// the product a * b * c.
+// 
+// ---
+//
+// The solution basically brute-forces checking possible leg values by checking
+// all other criteria. The one criteria not mentioned but inferrable is (right)
+// triangles have additional characteristics.
+
+function pythagoreanTripletForSum(sum) {
+    let {atan, pow, sqrt, PI} = Math;
+    let triplet;
+    // Neither can be longer than the hypotenuse, and latter needs to be
+    // at least half to be longest side.
+    let legMax = sum / 2 - 1;
+    // Go through candidates (in order) for a, b, c.
+    outer:
+    for (let a of createRange(legMax, 1)) { // Natural numbers start from 1.
+      for (let b of createRange(legMax, (a + 1))) { // a < b
+        // Sum of legs must be greater than hypotenuse to be a triangle.
+        if (a + b <= sum / 2) { continue; }
+        // Right triangles are such that 'leg' angles have tangent
+        // relations with the legs.
+        if (atan(a / b) + atan(b / a) != PI / 2) { continue; }
+        // Needs to be a right triangle's hypotenuse.
+        let c = sqrt(pow(a, 2) + pow(b, 2));
+        if (c % 1 !== 0) { continue; }
+        // Needs to fit sum.
+        if (a + b + c !== sum) { continue; }
+        // Commit.
+        triplet = [a, b, c];
+        break outer;
+      }
+    }
+    return triplet;
+}
+
+console.assert(pythagoreanTripletForSum(12).toString() == [3, 4, 5].toString(), 'pythagoreanTripletForSum');
+//console.log(pythagoreanTripletForSum(1000).reduce((s, n) => { return s * n; }, 1));
