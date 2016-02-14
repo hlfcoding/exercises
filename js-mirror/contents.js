@@ -2,6 +2,9 @@
 
 'use strict';
 
+let {assert, log} = console;
+let {atan, max, pow, sqrt, PI} = Math;
+
 // ## 1. Multiples of 3 and 5
 //
 // If we list all the natural numbers below 10 that are multiples of 3 or 5,
@@ -23,8 +26,8 @@ function sumOfMultiplesOf3And5Below(limit) {
   return parseInt(sum3 + sum5 - intersection);
 }
 
-console.assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9), 'sumOfMultiplesOf3And5Below');
-//console.log(sumOfMultiplesOf3And5Below(1000));
+assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9), 'sumOfMultiplesOf3And5Below');
+//log(sumOfMultiplesOf3And5Below(1000));
 
 // ## 2. Even Fibonacci numbers
 //
@@ -49,13 +52,13 @@ function sumOfEvenFibonaccis(limit, debug = false) {
     }
   }
   if (debug) {
-    console.log(`Largest fib within limit is ${n2}`);
+    log(`Largest fib within limit is ${n2}`);
   }
   return sum;
 }
 
-console.assert(sumOfEvenFibonaccis(34) === 10, 'sumOfEvenFibonaccis');
-//console.log(sumOfEvenFibonaccis(4000000));
+assert(sumOfEvenFibonaccis(34) === 10, 'sumOfEvenFibonaccis');
+//log(sumOfEvenFibonaccis(4000000));
 
 // ## 3. Largest prime factor
 //
@@ -86,9 +89,9 @@ function isPrime(n) {
   return is;
 }
 
-console.assert(isPrime(2), 'isPrime');
-console.assert(isPrime(3), 'isPrime');
-console.assert(!isPrime(4), 'isPrime');
+assert(isPrime(2), 'isPrime');
+assert(isPrime(3), 'isPrime');
+assert(!isPrime(4), 'isPrime');
 
 function nextPrime(n) {
   let candidate = n;
@@ -98,7 +101,7 @@ function nextPrime(n) {
   return candidate;
 }
 
-console.assert(nextPrime(29) === 31);
+assert(nextPrime(29) === 31);
 
 function largestPrimeFactor(n) {
   let prime = 1;
@@ -107,7 +110,7 @@ function largestPrimeFactor(n) {
   while (prime < (n / prime) && safety > 0) {
     safety--;
     if (safety === 0) {
-      console.log('Being safe and not continuing!');
+      log('Being safe and not continuing!');
     }
     prime = nextPrime(prime);
     if (n % prime === 0) {
@@ -117,7 +120,7 @@ function largestPrimeFactor(n) {
   return factor;
 }
 
-//console.log(largestPrimeFactor(600851475143));
+//log(largestPrimeFactor(600851475143));
 
 // ## 4. Largest palindrome product
 //
@@ -136,7 +139,7 @@ function reverseString(s) {
   return s.split('').reverse().join('');
 }
 
-console.assert(reverseString('foo') === 'oof', 'reverse');
+assert(reverseString('foo') === 'oof', 'reverse');
 
 function isPalindrome(n) {
   let digits = (n).toString();
@@ -144,8 +147,8 @@ function isPalindrome(n) {
   return reverseString(digits) === digits;
 }
 
-console.assert(isPalindrome(9009), 'isPalindrome');
-console.assert(!isPalindrome(123), 'isPalindrome');
+assert(isPalindrome(9009), 'isPalindrome');
+assert(!isPalindrome(123), 'isPalindrome');
 
 function largestPalindromeFromTwoNumbersWithDigits(digits) {
   let n = parseInt('9'.repeat(digits));
@@ -163,8 +166,8 @@ function largestPalindromeFromTwoNumbersWithDigits(digits) {
   return product;
 }
 
-console.assert(largestPalindromeFromTwoNumbersWithDigits(2) === 9009, 'largestPalindromeFromTwoNumbersWithDigits');
-//console.log(largestPalindromeFromTwoNumbersWithDigits(3));
+assert(largestPalindromeFromTwoNumbersWithDigits(2) === 9009, 'largestPalindromeFromTwoNumbersWithDigits');
+//log(largestPalindromeFromTwoNumbersWithDigits(3));
 
 // ## 5. Smallest multiple
 //
@@ -187,13 +190,13 @@ function isDivisibleBy(n, divisors) {
   return nonDivisor === undefined;
 }
 
-console.assert(isDivisibleBy(4, [1, 2]), 'isDivisibleBy');
+assert(isDivisibleBy(4, [1, 2]), 'isDivisibleBy');
 
 function createRange(length, start = 0) {
   return Array.from(new Array(length), (_, i) => i + start);
 }
 
-console.assert(createRange(3, 1).toString() === [1, 2, 3].toString(), 'createRange');
+assert(createRange(3, 1).toString() === [1, 2, 3].toString(), 'createRange');
 
 function smallestMultipleDivisibleByRange(range, debug = false) {
   let factors = [];
@@ -211,7 +214,7 @@ function smallestMultipleDivisibleByRange(range, debug = false) {
     factors.push(n);
   });
   if (debug) {
-    console.log(`Step: ${step}, factors: ${factors}`);
+    log(`Step: ${step}, factors: ${factors}`);
   }
   let multiple = 0;
   do {
@@ -220,8 +223,8 @@ function smallestMultipleDivisibleByRange(range, debug = false) {
   return multiple;
 }
 
-console.assert(smallestMultipleDivisibleByRange(createRange(10, 1)) === 2520, 'smallestMultipleDivisibleByRange');
-//console.log(smallestMultipleDivisibleByRange(createRange(20, 1)));
+assert(smallestMultipleDivisibleByRange(createRange(10, 1)) === 2520, 'smallestMultipleDivisibleByRange');
+//log(smallestMultipleDivisibleByRange(createRange(20, 1)));
 
 // ## 6. Sum square difference
 //
@@ -243,17 +246,17 @@ console.assert(smallestMultipleDivisibleByRange(createRange(10, 1)) === 2520, 's
 // smaller than max 32-bit int.
 
 function sumOfSquaresForRange(range) {
-  return range.reduce((sum, n) => { return sum + Math.pow(n, 2); }, 0);
+  return range.reduce((sum, n) => { return sum + pow(n, 2); }, 0);
 }
 
 function squareOfSumOfRange(range) {
-  return Math.pow(range.reduce((sum, n) => { return sum + n; }, 0), 2);
+  return pow(range.reduce((sum, n) => { return sum + n; }, 0), 2);
 }
 
-console.assert(sumOfSquaresForRange(createRange(10, 1)) == 385, 'sumOfSquaresForRange');
-console.assert(squareOfSumOfRange(createRange(10, 1)) == 3025, 'squareOfSumOfRange');
-console.assert(squareOfSumOfRange(createRange(10, 1)) - sumOfSquaresForRange(createRange(10, 1)) == 2640, 'squareOfSumOfRange - sumOfSquaresForRange');
-//console.log(squareOfSumOfRange(createRange(100, 1)) - sumOfSquaresForRange(createRange(100, 1)));
+assert(sumOfSquaresForRange(createRange(10, 1)) == 385, 'sumOfSquaresForRange');
+assert(squareOfSumOfRange(createRange(10, 1)) == 3025, 'squareOfSumOfRange');
+assert(squareOfSumOfRange(createRange(10, 1)) - sumOfSquaresForRange(createRange(10, 1)) == 2640, 'squareOfSumOfRange - sumOfSquaresForRange');
+//log(squareOfSumOfRange(createRange(100, 1)) - sumOfSquaresForRange(createRange(100, 1)));
 
 // ## 7. 10001st prime
 //
@@ -345,10 +348,10 @@ function nthPrime(ordinal) {
   return s.lastPrime;
 }
 
-console.assert(nthPrime(1) === 2, 'nthPrime');
-console.assert(nthPrime(6) === 13, 'nthPrime');
-console.assert(nthPrime(1000) === 7919, 'nthPrime');
-//console.log(nthPrime(10001));
+assert(nthPrime(1) === 2, 'nthPrime');
+assert(nthPrime(6) === 13, 'nthPrime');
+assert(nthPrime(1000) === 7919, 'nthPrime');
+//log(nthPrime(10001));
 
 // ## 8. Largest product in a series
 //
@@ -403,7 +406,7 @@ function maxAdjacentDigitsProductOfLength(length, digits, minimumFactor = 1) {
 
     let candidate = digits.slice(range.start, range.end)
       .reduce((p, d) => { return p * d; }, 1);
-    product = Math.max(product, candidate);
+    product = max(product, candidate);
 
     range.start += 1; // Shift lower bound.
   });
@@ -439,8 +442,8 @@ let digits = [
   3,6,0,0,8,2,3,2,5,7,5,3,0,4,2,0,7,5,2,9,6,3,4,5,0
 ];
 
-console.assert(maxAdjacentDigitsProductOfLength(4, digits) == 5832, 'maxAdjacentDigitsProductOfLength');
-//console.log(maxAdjacentDigitsProductOfLength(13, digits));
+assert(maxAdjacentDigitsProductOfLength(4, digits) == 5832, 'maxAdjacentDigitsProductOfLength');
+//log(maxAdjacentDigitsProductOfLength(13, digits));
 
 // ## 9. Special Pythagorean triplet
 //
@@ -457,7 +460,6 @@ console.assert(maxAdjacentDigitsProductOfLength(4, digits) == 5832, 'maxAdjacent
 // triangles have additional characteristics.
 
 function pythagoreanTripletForSum(sum) {
-    let {atan, pow, sqrt, PI} = Math;
     let triplet;
     // Neither can be longer than the hypotenuse, and latter needs to be
     // at least half to be longest side.
@@ -484,5 +486,5 @@ function pythagoreanTripletForSum(sum) {
     return triplet;
 }
 
-console.assert(pythagoreanTripletForSum(12).toString() == [3, 4, 5].toString(), 'pythagoreanTripletForSum');
-//console.log(pythagoreanTripletForSum(1000).reduce((s, n) => { return s * n; }, 1));
+assert(pythagoreanTripletForSum(12).toString() == [3, 4, 5].toString(), 'pythagoreanTripletForSum');
+//log(pythagoreanTripletForSum(1000).reduce((s, n) => { return s * n; }, 1));
