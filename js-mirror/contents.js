@@ -488,3 +488,23 @@ function pythagoreanTripletForSum(sum) {
 
 assert(pythagoreanTripletForSum(12).toString() == [3, 4, 5].toString(), 'pythagoreanTripletForSum');
 //log(pythagoreanTripletForSum(1000).reduce((s, n) => { return s * n; }, 1));
+
+// ## 10. Summation of Primes
+//
+// The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17. Find the sum of all the
+// primes below two million.
+
+function sumOfPrimesBelow(n) {
+  let s = new SieveOfEratosthenes();
+  let sum = 2;
+  while (s.lastPrime < n) {
+    sum += s.lastPrime;
+    s.purgeNextMultiples();
+    s.updateCursorIndex();
+  }
+  return sum;
+}
+
+assert(sumOfPrimesBelow(10) === 17, 'sumOfPrimesBelow');
+assert(sumOfPrimesBelow(100) === 1060, 'sumOfPrimesBelow');
+//log(sumOfPrimesBelow(2000000));
