@@ -14,7 +14,7 @@ extension Int {
     }
 }
 
-func sumOfMultiplesOf3And5Below(limit: Int) -> Int {
+func sumOfMultiplesOf3And5(below limit: Int) -> Int {
     // Approach 1: O(n): brute force
     /*
     var sum = 0
@@ -32,7 +32,7 @@ func sumOfMultiplesOf3And5Below(limit: Int) -> Int {
     return sum3 + sum5 - intersection
 }
 
-assert(sumOfMultiplesOf3And5Below(10) == (3 + 5 + 6 + 9))
+assert(sumOfMultiplesOf3And5(below: 10) == (3 + 5 + 6 + 9))
 //sumOfMultiplesOf3And5Below(1000)
 //:
 //: ## 2. Even Fibonacci numbers
@@ -81,7 +81,7 @@ extension Int {
         while divisor <= self / divisor {
             isPrime = self % divisor != 0
             if !isPrime { break }
-            divisor++
+            divisor += 1
         }
         if isPrime {
             primes.insert(self)
@@ -92,7 +92,7 @@ extension Int {
     func nextPrime() -> Int {
         var candidate = self
         repeat {
-            candidate++
+            candidate += 1
         } while !candidate.isPrime()
         return candidate
     }
@@ -115,7 +115,7 @@ extension Int {
         var safety = 1000
 
         while prime < self / prime && safety > 0 {
-            safety--
+            safety -= 1
             prime = prime.nextPrime()
             if self % prime == 0 {
                 factor = prime
@@ -149,37 +149,37 @@ extension Int {
     func isPalindrome() -> Bool {
         let digits = Array(String(self).characters)
         if digits.count % 2 != 0 { return false }
-        return digits.reverse() == digits
+        return digits.reversed() == digits
     }
 }
 
 assert(9009.isPalindrome())
 assert(!123.isPalindrome())
 
-func largestPalindromeFromTwoNumbersWithDigits(digits: Int) -> Int {
-    guard let n = Int(Array(count: digits, repeatedValue: "9").joinWithSeparator(""))
+func largestPalindromeFromTwoNumbers(withDigits digits: Int) -> Int {
+    guard let n = Int(Array(repeating: "9", count: digits).joined(separator: ""))
           else { return 0 }
     var n1 = n
     var n2 = n
     var product = n1 * n2
-//    while !isPalindrome(product) && product > 0 {
-//        if n1 > n2 { n1-- }
-//        else { n2-- }
+//    while !product.isPalindrome() && product > 0 {
+//        if n1 > n2 { n1 -= 1 }
+//        else { n2 -= 1 }
 //        product = n1 * n2
 //    }
     repeat {
         n2 = n
         repeat {
             product = n1 * n2
-            n2--
+            n2 -= 1
         } while !product.isPalindrome() && Double(n2) / Double(n) > 0.9
-        n1--
+        n1 -= 1
     } while !product.isPalindrome() && Double(n1) / Double(n) > 0.9
     return product
 }
 
-assert(largestPalindromeFromTwoNumbersWithDigits(2) == 9009)
-//largestPalindromeFromTwoNumbersWithDigits(3)
+assert(largestPalindromeFromTwoNumbers(withDigits: 2) == 9009)
+//largestPalindromeFromTwoNumbers(withDigits: 3)
 //:
 //: ## 5. Smallest multiple
 //:
@@ -192,38 +192,39 @@ assert(largestPalindromeFromTwoNumbersWithDigits(2) == 9009)
 //: The initial approach is to just have the step be the max factor. This won't scale for the larger range. Instead, the product of the primes in the range seems like a much better step, for reasons yet fully clear. Another optimization is to remove redundancies in the factors before checking divisibility.
 //:
 extension Int {
-    func isDivisibleByNumbers(numbers: [Int]) -> Bool {
-        for n in numbers where self % n != 0 {
+    func isDivisible(by divisors: [Int]) -> Bool {
+        for d in divisors where self % d != 0 {
             return false
         }
         return true
     }
 }
 
-assert(4.isDivisibleByNumbers(Array(1...2)))
+assert(4.isDivisible(by: Array(1...2)))
 
-func smallestMultipleDivisibleByRange(range: Range<Int>) -> Int {
+func smallestMultipleDivisible(by divisors: [Int]) -> Int {
     var factors: [Int] = []
     var step: Int = 1
-    outer: for n in range.reverse() {
-        if n.isPrime() {
-            step *= n
+    outer: for d in divisors.reversed() {
+        if d.isPrime() {
+            step *= d
         }
-        for f in factors where f > n && f % n == 0 {
+        for f in factors where f > d && f % d == 0 {
             continue outer
         }
-        factors.append(n)
+        factors.append(d)
     }
     print("Step: \(step), factors: \(factors)")
     var multiple = 0
+
     repeat {
         multiple += step
-    } while !multiple.isDivisibleByNumbers(factors)
+    } while !multiple.isDivisible(by: factors)
     return multiple
 }
 
-//smallestMultipleDivisibleByRange(1...10)
-//smallestMultipleDivisibleByRange(1...20)
+//smallestMultipleDivisible(by: Array(1...10))
+//smallestMultipleDivisible(by: Array(1...20))
 //:
 //: ## 6. Sum square difference
 //:
@@ -239,22 +240,22 @@ func smallestMultipleDivisibleByRange(range: Range<Int>) -> Int {
 //:
 //: This problem can simply be brute-forced. The largest number isn't that big, smaller than max 32-bit int.
 //:
-func pow(n: Int, _ p: Int) -> Int {
+func pow(_ n: Int, _ p: Int) -> Int {
     return Int(pow(Double(n), Double(p)))
 }
 
-func sumOfSquares(range: Range<Int>) -> Int {
-    return range.reduce(0) { $0 + pow($1, 2) }
+func sumOfSquares(of numbers: [Int]) -> Int {
+    return numbers.reduce(0) { $0 + pow($1, 2) }
 }
 
-func squareOfSum(range: Range<Int>) -> Int {
-    return pow(range.reduce(0) { $0 + $1 }, 2)
+func squareOfSum(of numbers: [Int]) -> Int {
+    return pow(numbers.reduce(0) { $0 + $1 }, 2)
 }
 
-assert(sumOfSquares(1...10) == 385)
-assert(squareOfSum(1...10) == 3025)
-assert(squareOfSum(1...10) - sumOfSquares(1...10) == 2640)
-//squareOfSum(1...100) - sumOfSquares(1...100)
+assert(sumOfSquares(of: Array(1...10)) == 385)
+assert(squareOfSum(of: Array(1...10)) == 3025)
+assert(squareOfSum(of: Array(1...10)) - sumOfSquares(of: Array(1...10)) == 2640)
+//squareOfSum(of: Array(1...100)) - sumOfSquares(of: Array(1...100))
 //:
 //: ## 7. 10001st prime
 //:
@@ -273,17 +274,17 @@ assert(squareOfSum(1...10) - sumOfSquares(1...10) == 2640)
 // Given a prime, go through greater numbers and remove multiples.
 
 class SieveOfEratosthenes {
-    private let chunkCount = 10000
-    private var largestPrimeIndex = 0
-    private var upperBound: Int!
-    private var nums = [2]
+    let chunkCount = 10000
+    var largestPrimeIndex = 0
+    var upperBound: Int!
+    var nums = [2]
 
     var lastPrime: Int { return nums[largestPrimeIndex] }
     var primes: [Int] { return Array(nums[0...largestPrimeIndex]) }
 
     init() {
         upperBound = chunkCount
-        nums += 3.stride(through: upperBound, by: 2)
+        nums += stride(from: 3, through: upperBound, by: 2)
         largestPrimeIndex = 1
     }
 
@@ -291,7 +292,7 @@ class SieveOfEratosthenes {
         purgeMultiplesOfPrime(lastPrime, forNumbers: &nums)
     }
 
-    func purgeMultiplesOfPrime(p: Int, inout forNumbers nums: [Int]) {
+    func purgeMultiplesOfPrime(_ p: Int, forNumbers nums: inout [Int]) {
         var factor = p // No need to check multiples below the square.
         func multiple() -> Int { return p * factor }
         if multiple() <= nums.first! {
@@ -299,8 +300,8 @@ class SieveOfEratosthenes {
             factor = nums.first! / multiple()
         }
         while multiple() <= nums.last! {
-            if let i = nums.indexOf(multiple()) {
-                nums.removeAtIndex(i)
+            if let i = nums.index(of: multiple()) {
+                nums.remove(at: i)
             }
             factor += 2
         }
@@ -308,13 +309,13 @@ class SieveOfEratosthenes {
 
     func updateCursorIndex() {
         // Update the cursor on where numbers stop being guaranteed primes.
-        largestPrimeIndex++
+        largestPrimeIndex += 1
         // If our cursor cannot move forward because our chunk ran out...
         guard largestPrimeIndex == nums.count else { return }
         // Add another chunk.
         let lowerBound = upperBound + 1
         upperBound = upperBound + chunkCount
-        var addition = Array(lowerBound.stride(through: upperBound, by: 2))
+        var addition = Array(stride(from: lowerBound, through: upperBound, by: 2))
         for p in nums {
             purgeMultiplesOfPrime(p, forNumbers: &addition)
         }
@@ -323,7 +324,7 @@ class SieveOfEratosthenes {
 }
 
 //var sortedPrimes = [2]
-func nthPrime(ordinal: Int) -> Int {
+func nthPrime(_ ordinal: Int) -> Int {
     // Deal with 2 as a special case.
     guard ordinal > 1 else { return 2 }
     let s = SieveOfEratosthenes()
@@ -340,9 +341,9 @@ func nthPrime(ordinal: Int) -> Int {
     if ordinal > sortedPrimes.count {
         var candidate = sortedPrimes.last!
         outer: repeat {
-            candidate++
+            candidate += 1
             for p in sortedPrimes {
-                //tick++
+                //tick += 1
                 if candidate % p == 0 {
                     continue outer
                 }
@@ -398,24 +399,28 @@ func nthPrime(ordinal: Int) -> Int {
 //:
 func maxAdjacentDigitsProductOfLength(length: Int, digits: [Int], minimumFactor: Int = 1) -> Int {
     var product = 0
-    var range: Range<Int>?
-    for (i, d) in digits.enumerate() {
+    var lower: Int!, upper: Int!
+    for (i, d) in digits.enumerated() {
         guard d > minimumFactor else {
-            range = nil; continue
-        }
-        guard range != nil else {
-            range = Range(start: i, end: i); continue
-        }
-
-        range!.endIndex = i + 1 // Shift (non-inclusive) upper bound.
-
-        guard (range!.endIndex - range!.startIndex) == length else {
+            lower = nil; upper = nil;
             continue
         }
 
-        product = max(product, digits[range!].reduce(1) { $0 * $1 })
+        guard lower != nil && upper != nil else {
+            lower = i; upper = i
+            continue
+        }
 
-        range!.startIndex += 1 // Shift lower bound.
+        upper = i + 1 // Shift (non-inclusive) upper bound.
+
+        guard (upper - lower) == length else {
+            continue
+        }
+
+        let range = Range(uncheckedBounds: (lower: lower, upper: upper))
+        product = max(product, digits[range].reduce(1) { $0 * $1 })
+
+        lower = lower + 1 // Shift lower bound.
     }
     return product
 }
@@ -435,7 +440,7 @@ let digits = [7,3,1,6,7,1,7,6,5,3,1,3,3,0,6,2,4,9,1,9,2,2,5,1,1,9,6,7,4,4,2,6,5,
 //:
 //: The solution basically brute-forces checking possible leg values by checking all other criteria. The one criteria not mentioned but inferrable is (right) triangles have additional characteristics.
 //:
-func pythagoreanTripletForSum(sum: Int) -> [Int]? {
+func pythagoreanTripletForSum(_ sum: Int) -> [Int]? {
     var triplet: [Int]?
     // Neither can be longer than the hypotenuse, and latter needs to be
     // at least half to be longest side.
@@ -451,7 +456,7 @@ func pythagoreanTripletForSum(sum: Int) -> [Int]? {
             guard atan(Double(a)/Double(b)) + atan(Double(b)/Double(a)) == M_PI_2 else { continue }
             // Needs to be a right triangle's hypotenuse.
             let c = sqrt(Double(pow(a, 2) + pow(b, 2)))
-            guard c % 1.0 == 0 else { continue }
+            guard c.truncatingRemainder(dividingBy: 1.0) == 0 else { continue }
             // Needs to fit sum.
             guard a + b + Int(c) == sum else { continue }
             // Commit.
