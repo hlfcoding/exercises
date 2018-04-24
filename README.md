@@ -1,3 +1,3 @@
-# Project Euler
+# Exercises
 
-Project Euler solutions as a [Swift playground](http://git.io/vWgbi), two birds with one stone.
+> :chart_with_upwards_trend: Solutions to Katas, Project Euler, etc.
