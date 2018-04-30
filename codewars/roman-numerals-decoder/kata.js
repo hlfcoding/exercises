@@ -23,6 +23,15 @@ function solution(roman){
   return n;
 }
 
+const Test = {
+  expect(expression, message) {
+    console.assert(...arguments);
+    if (!!expression) {
+      console.log('PASS', message);
+    }
+  }
+};
+
 Test.expect(solution('XXI') == 21, 'XXI should == 21');
 Test.expect(solution('I') == 1, 'I should == 1');
 Test.expect(solution('IV') == 4, 'IV should == 4');

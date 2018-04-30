@@ -47,8 +47,15 @@ def solution(number)
       else str.concat l
       end
     end
-  puts str
+  # puts str
   str
+end
+
+module Test
+  def self.expect(expression, message)
+    raise message unless expression
+    puts "PASS #{message}"
+  end
 end
 
 Test.expect solution(1000) == 'M', '1000 should == "M"'
