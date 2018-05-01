@@ -52,11 +52,7 @@ RomanNumerals =
       int += dir * n
     int
 
-Test =
-  expect: (expression, message) ->
-    console.assert arguments...
-    if !!expression
-      console.log 'PASS', message
+Test = require '../test'
 
 Test.expect(RomanNumerals.toRoman(1000) == 'M', '1000 should == "M"')
 Test.expect(RomanNumerals.toRoman(4) == 'IV', '4 should == "IV"')

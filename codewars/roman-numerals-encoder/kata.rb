@@ -51,12 +51,7 @@ def solution(number)
   str
 end
 
-module Test
-  def self.expect(expression, message)
-    raise message unless expression
-    puts "PASS #{message}"
-  end
-end
+require_relative '../test.rb'
 
 Test.expect solution(1000) == 'M', '1000 should == "M"'
 Test.expect solution(4) == 'IV', '4 should == "IV"'

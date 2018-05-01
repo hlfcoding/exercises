@@ -37,11 +37,7 @@ solution = (int) ->
           d -= 1
   str
 
-Test =
-  expect: (expression, message) ->
-    console.assert arguments...
-    if !!expression
-      console.log 'PASS', message
+Test = require '../test'
 
 Test.expect(solution(1000) == 'M', '1000 should == "M"')
 Test.expect(solution(4) == 'IV', '4 should == "IV"')
