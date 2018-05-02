@@ -10,8 +10,7 @@ RomanNumerals =
     I: [1, 0]
 
   _getLetter: (digit, power) ->
-    for letter, v of @_translationTable
-      [d, p] = v
+    for letter, [d, p] of @_translationTable
       return letter if d is digit and p is power
 
   _getInt: (letter) ->
@@ -19,25 +18,18 @@ RomanNumerals =
     digit * Math.pow(10, power)
 
   toRoman: (int) ->
-    digits = "#{int}".split ''
-    str = ''
-    for d, i in digits when d isnt '0'
-      p = (digits.length - 1) - i
-      d = parseInt d
+    "#{int}".split ''
+    .map (d, i, a) -> [parseInt(d), a.length - 1 - i]
+    .reduce (r, [d, p]) =>
+      return r if d is 0
       l = @_getLetter d, p
-      if l? then str += l
-      else
-        if d in [4, 9]
-          str += @_getLetter 1, p
-          str += if d is 9 then @_getLetter(1, ++p) else @_getLetter(5, p)
-        else
-          if d >= 5
-            str += @_getLetter 5, p
-            d -= 5
-          until d is 0
-            str += @_getLetter 1, p
-            d -= 1
-    str
+      return r + l if l?
+      [l1, l5, l1n] = [@_getLetter(1, p), @_getLetter(5, p), @_getLetter(1, p + 1)]
+      return r + l1 + (if d is 9 then l1n else l5) if d in [4, 9]
+      r += l5 if d >= 5 and d -= 5
+      r += l1 while d--
+      return r
+    , ''
 
   fromRoman: (str) ->
     letters = str.split ''
