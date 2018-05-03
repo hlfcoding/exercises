@@ -9,40 +9,36 @@ RomanNumerals =
     V: [5, 0]
     I: [1, 0]
 
-  _getLetter: (digit, power) ->
+  _letter: (digit, power) ->
     for letter, [d, p] of @_translationTable
       return letter if d is digit and p is power
 
-  _getInt: (letter) ->
+  _int: (letter) ->
     [digit, power] = @_translationTable[letter]
     digit * Math.pow(10, power)
 
   toRoman: (int) ->
     "#{int}".split ''
     .map (d, i, a) -> [parseInt(d), a.length - 1 - i]
-    .reduce (r, [d, p]) =>
-      return r if d is 0
-      l = @_getLetter d, p
-      return r + l if l?
-      [l1, l5, l1n] = [@_getLetter(1, p), @_getLetter(5, p), @_getLetter(1, p + 1)]
-      return r + l1 + (if d is 9 then l1n else l5) if d in [4, 9]
-      r += l5 if d >= 5 and d -= 5
-      r += l1 while d--
-      return r
+    .reduce (str, [d, p]) =>
+      return str if d is 0
+      l = @_letter d, p
+      return str + l if l?
+      [l1, l5, l1n] = [@_letter(1, p), @_letter(5, p), @_letter(1, p + 1)]
+      return str + l1 + (if d is 9 then l1n else l5) if d in [4, 9]
+      str += l5 if d >= 5 and d -= 5
+      str += l1 while d--
+      str
     , ''
 
   fromRoman: (str) ->
-    letters = str.split ''
-    int = 0
-    for l, i in letters
-      n = @_getInt l
-      lNext = letters[i + 1] if i < letters.length
-      dir = 1
-      if lNext?
-        nNext = @_getInt lNext
-        dir = -1 if nNext > n
-      int += dir * n
-    int
+    str.split ''
+    .map (l, i, a) -> [l, a[i + 1]]
+    .reduce (int, [l, ln]) =>
+      n = @_int l
+      dir = if ln? and @_int(ln) > n then -1 else 1
+      int + n * dir
+    , 0
 
 Test = require '../test'
 
