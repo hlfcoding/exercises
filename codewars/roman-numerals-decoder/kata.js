@@ -1,23 +1,9 @@
-function solution(roman){
-  var n = 0;
-  var rds = roman.split('');
-  var map = {
-    M: 1000,
-    D: 500,
-    C: 100,
-    L: 50,
-    X: 10,
-    V: 5,
-    I: 1
-  };
-  for (var v, d, dp, l = rds.length; l--;) {
-    v = rds[l];
-    d = map[v];
-    if (d < dp && dp != null) {
-      n -= d;
-    } else {
-      n += d;
-    }
+function solution(roman) {
+  const map = { M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1 };
+  let n = 0;
+  for (let dp, ls = roman.split(''), i = ls.length; i--;) {
+    let l = ls[i], d = map[l];
+    n += d * (d < dp && dp != null ? -1 : 1);
     dp = d;
   }
   return n;
