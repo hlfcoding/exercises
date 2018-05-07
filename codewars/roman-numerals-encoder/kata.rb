@@ -8,42 +8,25 @@ TranslationTable = {
   I: [1, 0],
 }
 
-def get_letter(digit, power)
+def _letter(digit, power)
   TranslationTable.key([digit, power]).to_s
 end
 
-def get_int(letter)
-  digit, power = TranslationTable[letter]
-  digit * 10 ** power
+def _letters(d, p)
+  return '' if d == 0
+  l = _letter(d, p)
+  return l unless l.empty?
+  l1, l5, l1n = [_letter(1, p), _letter(5, p), _letter(1, p + 1)]
+  return l1 + (d == 9 ? l1n : l5) if [4, 9].include?(d)
+  ls = (d >= 5 && d -= 5) ? l5 : ''
+  d.downto(1) { ls << l1 }
+  ls
 end
 
 def solution(number)
-  digits = number.to_s.split ''
-  str = ''
-  digits
-    .each_with_index do |d, i|
-      p = (digits.length - 1) - i
-      d = d.to_i
-      l = get_letter d, p
-      if l.empty?
-        if [4, 9].include? d
-          str.concat get_letter 1, p
-          str.concat d == 9 ? get_letter(1, p + 1) : get_letter(5, p)
-        else
-          if d >= 5
-            str.concat get_letter 5, p
-            d -= 5
-          end
-          until d == 0
-            str.concat get_letter 1, p
-            d -= 1
-          end
-        end
-      else str.concat l
-      end
-    end
-  # puts str
-  str
+  a = number.to_s.split //
+  a.map.with_index { |d, i| [d.to_i, a.count - 1 - i] }
+   .reduce('') { |m, (d, p)| m + _letters(d, p) }
 end
 
 require_relative '../test.rb'
