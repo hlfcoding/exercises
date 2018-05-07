@@ -9,12 +9,7 @@ TranslationTable = {
 }
 
 def get_letter(digit, power)
-  letter = nil
-  TranslationTable.each do |l, v|
-    d, p = v
-    letter = l if d == digit and p == power
-  end
-  letter.to_s
+  TranslationTable.key([digit, power]).to_s
 end
 
 def get_int(letter)
