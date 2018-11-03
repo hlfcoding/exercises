@@ -44,9 +44,7 @@ assert(sumOfMultiplesOf3And5(below: 10) == (3 + 5 + 6 + 9))
 //: By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
 //:
 func sumOfEvenFibonaccis(limit: Int = 4000000) -> Int {
-    var sum = 2
-    var n1 = 1
-    var n2 = 2
+    var sum = 2, n1 = 1, n2 = 2
     while n1 + n2 < limit {
         let temp = n1
         n1 = n2
@@ -72,37 +70,42 @@ func sumOfEvenFibonaccis(limit: Int = 4000000) -> Int {
 var primes = Set<Int>()
 
 extension Int {
-    func isPrime() -> Bool {
-        if primes.contains(self) {
+    var isPrime: Bool {
+        guard !primes.contains(self) else {
             return true
         }
-        var isPrime = true
-        var divisor = 2
-        while divisor <= self / divisor {
-            isPrime = self % divisor != 0
-            if !isPrime { break }
-            divisor += 1
+        var isPrime = true, n = 2
+        let bound = squareRoot
+        while n <= bound {
+            isPrime = !n.isDivisor(of: self)
+            guard isPrime else { break }
+            n += 1
         }
         if isPrime {
             primes.insert(self)
         }
         return isPrime
     }
-
-    func nextPrime() -> Int {
-        var candidate = self
+    var nextPrime: Int {
+        var n = self
         repeat {
-            candidate += 1
-        } while !candidate.isPrime()
-        return candidate
+            n += 1
+        } while !n.isPrime
+        return n
+    }
+    var squareRoot: Int {
+        return Int(round(sqrt(Double(self))))
+    }
+    func isDivisor(of n: Int) -> Bool {
+        return n % self == 0
     }
 }
 
-assert(2.isPrime())
-assert(3.isPrime())
-assert(!4.isPrime())
+assert(2.isPrime)
+assert(3.isPrime)
+assert(!4.isPrime)
 
-assert(29.nextPrime() == 31)
+assert(29.nextPrime == 31)
 
 extension Int {
     /**
@@ -116,7 +119,7 @@ extension Int {
 
         while prime < self / prime && safety > 0 {
             safety -= 1
-            prime = prime.nextPrime()
+            prime = prime.nextPrime
             if self % prime == 0 {
                 factor = prime
             }
@@ -206,7 +209,7 @@ func smallestMultipleDivisible(by divisors: [Int]) -> Int {
     var factors: [Int] = []
     var step: Int = 1
     outer: for d in divisors.reversed() {
-        if d.isPrime() {
+        if d.isPrime {
             step *= d
         }
         for f in factors where f > d && f % d == 0 {
