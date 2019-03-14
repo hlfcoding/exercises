@@ -150,9 +150,9 @@ extension Int {
 
 extension Int {
     func isPalindrome() -> Bool {
-        let digits = Array(String(self).characters)
+        let digits = String(self)
         if digits.count % 2 != 0 { return false }
-        return digits.reversed() == digits
+        return String(digits.reversed()) == digits
     }
 }
 
